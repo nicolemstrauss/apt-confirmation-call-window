@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Time Window Configuration — Bamboo Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; color: #1b2a4a; background: #f7f9fc; }
+
+    /* Header */
+    .header { background: #0d2137; padding: 1.25rem 2rem; display: flex; align-items: center; }
+    .header .logo { color: #fff; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; }
+    .header .logo span { color: #3bbfa0; }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #0d2137 0%, #163a5c 100%); padding: 3rem 2rem; text-align: center; color: #fff; }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero p { color: #a8c4d4; font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+    /* Main content */
+    .container { max-width: 1100px; margin: -2rem auto 3rem; padding: 0 1.5rem; position: relative; z-index: 1; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 2.5rem; margin-bottom: 1.5rem; }
+
+    /* Actions card */
+    .actions { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.75rem; border: none; border-radius: 50px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: inherit; }
+    .btn-download { background: #3bbfa0; color: #fff; }
+    .btn-download:hover { background: #2fa88b; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,191,160,0.3); }
+    .btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Upload area */
+    .upload-area { border: 2px dashed #c8d6e5; border-radius: 12px; padding: 2.5rem; text-align: center; transition: all 0.2s; cursor: pointer; background: #f9fbfd; }
+    .upload-area:hover { border-color: #3bbfa0; background: #f0fdf9; }
+    .upload-area.dragover { border-color: #3bbfa0; background: #e6faf4; }
+    .upload-area p { margin: 0.4rem 0; color: #5a6f8a; }
+    .upload-area .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .upload-area .upload-title { font-weight: 600; color: #1b2a4a; font-size: 1.05rem; }
+    .upload-area input { display: none; }
+
+    /* Status messages */
+    .status { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 8px; display: none; font-weight: 500; }
+    .status.success { display: block; background: #e6faf4; border: 1px solid #3bbfa0; color: #1a6b55; }
+    .status.error { display: block; background: #fef2f2; border: 1px solid #f87171; color: #991b1b; }
+    .error-banner { background: #fef2f2; border: 1px solid #f87171; color: #991b1b; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500; }
+
+    /* Instructions */
+    h2 { font-size: 1.4rem; font-weight: 700; color: #0d2137; margin-top: 2rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e8eef4; }
+    h2:first-child { margin-top: 0; }
+    h3 { font-size: 1.05rem; font-weight: 600; color: #163a5c; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    p, li { margin-bottom: 0.5rem; color: #3d5068; }
+    ul, ol { padding-left: 1.5rem; }
+    code { background: #eef3f8; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.88em; color: #163a5c; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.88rem; }
+    th, td { border: 1px solid #e8eef4; padding: 0.6rem 0.75rem; text-align: left; }
+    th { background: #f1f5f9; color: #0d2137; font-weight: 600; }
+    .checklist-box { background: #f0fdf9; border: 1px solid #3bbfa0; border-radius: 8px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+    .checklist-box h3 { margin-top: 0; color: #1a6b55; }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { padding: 0.3rem 0; padding-left: 1.5rem; position: relative; }
+    .checklist li::before { content: "☐"; position: absolute; left: 0; color: #3bbfa0; font-weight: 600; }
+
+    /* Footer */
+    .footer { text-align: center; padding: 2rem; color: #8a9bb5; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Bamboo <span>Health</span></div>
+  </div>
+
+  <div class="hero">
+    <h1>Practice Time Window Configuration</h1>
+    <p>Download the template, fill in your practice details, and upload the completed file below.</p>
+  </div>
+
+  <div class="container">
+    <div id="error-banner" class="error-banner" style="display:none;"></div>
+
+    <div class="card">
+      <h2 style="margin-top:0;">Welcome</h2>
+      <p>We need a few details about your practice locations to configure call scheduling on your behalf. This page will guide you through the process:</p>
+      <ol>
+        <li><strong>Download</strong> the pre-formatted Excel template using the button below</li>
+        <li><strong>Fill in</strong> your practice phone numbers, timezones, and preferred call windows (detailed instructions further down)</li>
+        <li><strong>Save</strong> the file as: <code>YourOrganizationName_YYYY-MM-DD.xlsx</code> (e.g. <code>AcmeHealth_2026-05-01.xlsx</code>)</li>
+        <li><strong>Upload</strong> the completed file using the upload area below</li>
+      </ol>
+      <p>The entire process typically takes <strong>5–10 minutes</strong>. If you have any questions, reach out to your account representative.</p>
+    </div>
+
+    <div class="card">
+      <div class="actions">
+        <button class="btn btn-download" id="download-btn">⬇ Download Template</button>
+      </div>
+      <div class="upload-area" id="upload-area" style="margin-top:1.5rem;">
+        <div class="upload-icon">📄</div>
+        <p class="upload-title">Upload Completed File</p>
+        <p>Drag &amp; drop your .xlsx file here, or click to browse</p>
+        <input type="file" id="file-input" accept=".xlsx">
+        <p id="file-name" style="color:#3bbfa0;font-weight:600;"></p>
+      </div>
+      <div id="status" class="status"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0;">Instructions</h2>
+
+      <h3>Column Guide</h3>
+      <table>
+        <thead><tr><th>Column</th><th>What to Enter</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>phone</strong></td><td>Practice phone number with country code, starting with <code>+</code></td><td><code>+12143309221</code></td></tr>
+          <tr><td><strong>tz</strong></td><td>Timezone — select from the dropdown</td><td><code>America/Chicago</code></td></tr>
+          <tr><td><strong>max_days</strong></td><td>Maximum number of days to attempt contact</td><td><code>2</code></td></tr>
+          <tr><td><strong>attempts_per_day</strong></td><td>Number of call attempts per day</td><td><code>1</code></td></tr>
+          <tr><td><strong>Monday – Sunday</strong></td><td>Call windows for each day</td><td><code>08:00-12:00, 13:00-17:00</code></td></tr>
+          <tr><td><strong>alternate_ivr_behavior</strong></td><td><code>TRUE</code> or <code>FALSE</code></td><td><code>TRUE</code></td></tr>
+          <tr><td><strong>alternate_ivr_description</strong></td><td>Describe behavior if TRUE; blank otherwise</td><td><code>Wait for a live agent.</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Entering Time Windows</h3>
+      <p>Use <strong>24-hour format</strong>: <code>HH:MM-HH:MM</code></p>
+      <table>
+        <thead><tr><th>What you want</th><th>What to enter</th></tr></thead>
+        <tbody>
+          <tr><td>One window, morning only</td><td><code>08:00-12:00</code></td></tr>
+          <tr><td>Two windows</td><td><code>08:00-12:00, 13:00-17:00</code></td></tr>
+          <tr><td>No calls on this day</td><td><em>(leave blank)</em></td></tr>
+        </tbody>
+      </table>
+      <p><strong>Rules:</strong></p>
+      <ul>
+        <li>Hours: <code>00</code>–<code>23</code>, minutes: <code>00</code>–<code>59</code></li>
+        <li>Always use two digits (e.g. <code>08:00</code>, not <code>8:00</code>)</li>
+        <li>Separate multiple windows with a comma</li>
+      </ul>
+
+      <h3>Available Timezones</h3>
+      <ul>
+        <li><code>America/New_York</code> — Eastern</li>
+        <li><code>America/Chicago</code> — Central</li>
+        <li><code>America/Denver</code> — Mountain</li>
+        <li><code>America/Los_Angeles</code> — Pacific</li>
+        <li><code>America/Phoenix</code> — Arizona (no DST)</li>
+      </ul>
+
+      <div class="checklist-box">
+      <h3>✓ Before You Submit</h3>
+      <ul class="checklist">
+        <li>Every row has a phone number starting with <code>+</code></li>
+        <li>A timezone is selected for each row</li>
+        <li>Time windows use 24-hour format (<code>HH:MM-HH:MM</code>)</li>
+        <li>Days with no call windows are left blank</li>
+        <li><code>alternate_ivr_behavior</code> is <code>TRUE</code> or <code>FALSE</code> for each row</li>
+      </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 Bamboo Health. All rights reserved.
+  </div>
+
+  <script>
+    const API_BASE = ''; // TODO: set to your API Gateway URL
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    function disablePage(msg) {
+      document.getElementById('error-banner').style.display = 'block';
+      document.getElementById('error-banner').textContent = msg;
+      document.getElementById('download-btn').disabled = true;
+      document.getElementById('upload-area').style.pointerEvents = 'none';
+      document.getElementById('upload-area').style.opacity = '0.5';
+    }
+
+    // TODO: Re-enable token validation after deploy
+    // if (!token) {
+    //   disablePage('Invalid link — no customer token found. Please use the URL provided in your email.');
+    // } else {
+    //   (async () => {
+    //     try {
+    //       const res = await fetch(`${API_BASE}/validate?token=${encodeURIComponent(token)}`);
+    //       if (!res.ok) disablePage('This link is invalid or has expired. Please contact your account representative.');
+    //     } catch (e) {
+    //       disablePage('Unable to verify your link. Please try again later.');
+    //     }
+    //   })();
+    // }
+
+    document.getElementById('download-btn').addEventListener('click', async () => {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/template?token=${encodeURIComponent(token)}`);
+        if (!res.ok) throw new Error('Failed to get download link');
+        const { downloadUrl } = await res.json();
+        window.location.href = downloadUrl;
+      } catch (err) {
+        showStatus('Download failed. Please try again or contact your account representative.', 'error');
+      }
+    });
+
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('file-input');
+    const statusEl = document.getElementById('status');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+    function handleFile(file) {
+      if (!file.name.endsWith('.xlsx')) { showStatus('Please upload an .xlsx file.', 'error'); return; }
+      document.getElementById('file-name').textContent = file.name;
+      uploadFile(file);
+    }
+
+    async function uploadFile(file) {
+      statusEl.style.display = 'none';
+      try {
+        const res = await fetch(`${API_BASE}/upload-url?token=${encodeURIComponent(token)}&filename=${encodeURIComponent(file.name)}`);
+        if (!res.ok) throw new Error('Failed to get upload URL');
+        const { uploadUrl } = await res.json();
+        const up = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }, body: file });
+        if (!up.ok) throw new Error('Upload failed');
+        showStatus('✓ File uploaded successfully! Thank you.', 'success');
+      } catch (err) {
+        showStatus(`Upload failed: ${err.message}. Please try again or contact your account representative.`, 'error');
+      }
+    }
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = 'status ' + type;
+      statusEl.style.display = 'block';
+    }
+
+    // Live reload - polls for file changes
+    (function() {
+      let lastModified = null;
+      setInterval(async () => {
+        try {
+          const res = await fetch(window.location.href, { method: 'HEAD' });
+          const mod = res.headers.get('last-modified');
+          if (lastModified && mod !== lastModified) window.location.reload();
+          lastModified = mod;
+        } catch(e) {}
+      }, 500);
+    })();
+  </script>
+</body>
+</html>

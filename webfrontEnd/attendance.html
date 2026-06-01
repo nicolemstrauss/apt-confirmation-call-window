@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Attendance — Bamboo Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1b2a4a; line-height: 1.5; }
+
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: #fff; border-bottom: 1px solid #e8eef4; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #0d2137; }
+    .logo span { color: #3bbfa0; }
+    .practice-info { text-align: right; }
+    .practice-name { font-weight: 700; color: #0d2137; }
+    .practice-location { color: #5a6f8a; font-size: 0.9rem; }
+
+    /* Layout */
+    .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    /* Sidebar */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+    .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .card-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #3bbfa0; margin-bottom: 1rem; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid #f0f2f5; }
+    .summary-row:last-of-type { border-bottom: none; }
+    .summary-label { color: #3d5068; }
+    .summary-value { font-weight: 700; font-size: 1.1rem; }
+    .summary-value.green { color: #3bbfa0; }
+    .summary-value.red { color: #e53e3e; }
+    .summary-value.gray { color: #5a6f8a; }
+
+    .week-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #3bbfa0; margin-top: 1rem; margin-bottom: 0.5rem; }
+    .progress-bar { height: 8px; background: #e8eef4; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
+    .progress-fill { height: 100%; display: flex; }
+    .progress-green { background: #3bbfa0; }
+    .progress-red { background: #e53e3e; }
+    .attendance-text { font-size: 0.85rem; color: #5a6f8a; white-space: nowrap; }
+    .attendance-text strong { color: #3bbfa0; }
+
+    /* Calendar */
+    .calendar-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .calendar-nav button { background: none; border: none; cursor: pointer; font-size: 1rem; color: #5a6f8a; }
+    .calendar-month { font-weight: 600; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 2px; }
+    .calendar-grid .day-header { font-size: 0.7rem; font-weight: 600; color: #5a6f8a; padding: 0.3rem; }
+    .calendar-grid .day { font-size: 0.8rem; padding: 0.4rem; border-radius: 6px; cursor: pointer; }
+    .calendar-grid .day:hover { background: #f0f2f5; }
+    .calendar-grid .day.today { background: #0d2137; color: #fff; font-weight: 700; }
+    .calendar-grid .day.selected { background: #3bbfa0; color: #fff; font-weight: 700; }
+    .calendar-grid .day.has-data { color: #3bbfa0; font-weight: 600; }
+    .calendar-grid .day.empty { visibility: hidden; }
+
+    /* Main content */
+    .main { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Week strip */
+    .week-strip { background: #fff; border-radius: 12px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .week-strip button { background: none; border: none; cursor: pointer; color: #5a6f8a; font-size: 1rem; }
+    .week-days { display: flex; flex: 1; justify-content: space-around; }
+    .week-day { text-align: center; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+    .week-day:hover { background: #f0f2f5; }
+    .week-day.active { background: #0d2137; color: #fff; }
+    .week-day .day-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+    .week-day .day-num { font-size: 1.25rem; font-weight: 700; margin-top: 2px; }
+    .week-day.active .day-label, .week-day.active .day-num { color: #fff; }
+
+    /* Schedule */
+    .schedule { background: #fff; border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .schedule-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .schedule-date { font-size: 1.25rem; font-weight: 700; }
+    .schedule-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-mark-all { padding: 0.5rem 1.25rem; border: 2px solid #3bbfa0; border-radius: 50px; background: #fff; color: #3bbfa0; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: inherit; }
+    .btn-mark-all:hover { background: #f0fdf9; }
+    .patient-count { color: #5a6f8a; font-size: 0.9rem; }
+
+    .schedule-table { width: 100%; }
+    .schedule-table th { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #5a6f8a; text-align: left; padding: 0.75rem 0; border-bottom: 1px solid #e8eef4; }
+    .schedule-table td { padding: 1rem 0; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+    .schedule-table tr:last-child td { border-bottom: none; }
+
+    .patient-cell { display: flex; align-items: center; gap: 0.75rem; }
+    .avatar { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: #fff; background: #5a6f8a; }
+    .patient-name { font-weight: 600; }
+
+    .status-btns { display: flex; gap: 0.5rem; align-items: center; }
+    .status-btn { padding: 0.4rem 1rem; border-radius: 6px; border: 1.5px solid #d1d9e0; background: #fff; color: #5a6f8a; font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
+    .status-btn:hover { border-color: #a0aec0; transform: scale(1.03); }
+    .status-btn.showed.active { background: #f0fdf9; border-color: #3bbfa0; color: #3bbfa0; font-weight: 600; transform: scale(1.05); }
+    .status-btn.noshow.active { background: #fff5f5; border-color: #e53e3e; color: #e53e3e; font-weight: 600; transform: scale(1.05); }
+
+    .reason-input { margin-top: 0.5rem; padding: 0.4rem 0.75rem; border: 1px solid #d1d9e0; border-radius: 6px; font-size: 0.8rem; width: 200px; font-family: inherit; }
+    .reason-input::placeholder { color: #a0aec0; }
+
+    /* Transitions */
+    .summary-value { transition: transform 0.2s ease; }
+    .summary-value.bump { transform: scale(1.2); }
+    .week-day { transition: all 0.2s ease; }
+    .progress-green, .progress-red { transition: width 0.4s ease; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 3rem 1rem; color: #5a6f8a; }
+    .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state p { font-size: 1rem; }
+
+    /* Export button */
+    .btn-export { padding: 0.5rem 1.25rem; border: 2px solid #5a6f8a; border-radius: 50px; background: #fff; color: #5a6f8a; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
+    .btn-export:hover { background: #f0f2f5; transform: scale(1.03); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Bamboo <span>Health</span></div>
+    <div style="font-size:1.5rem;font-weight:700;color:#3bbfa0;letter-spacing:-0.5px;">Patient Attendance</div>
+    <div class="practice-info">
+      <div class="practice-name">Acme Family Medicine</div>
+      <div class="practice-location">Dallas, TX</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="card">
+        <div class="card-title">Today's Summary</div>
+        <div class="summary-row"><span class="summary-label">Showed</span><span class="summary-value green" id="showed-count">4</span></div>
+        <div class="summary-row"><span class="summary-label">No-Show</span><span class="summary-value red" id="noshow-count">1</span></div>
+        <div class="summary-row"><span class="summary-label">Pending</span><span class="summary-value gray" id="pending-count">1</span></div>
+        <div class="week-label">This Week</div>
+        <div class="progress-bar"><div class="progress-fill"><div class="progress-green" style="width:19%"></div><div class="progress-red" style="width:3%"></div></div></div>
+        <div class="attendance-text"><strong>19%</strong> attendance rate (6/32 patients)</div>
+      </div>
+
+      <div class="card">
+        <div class="calendar-nav">
+          <button>←</button>
+          <span class="calendar-month">May 2026</span>
+          <button>→</button>
+        </div>
+        <div class="calendar-grid">
+          <div class="day-header">S</div><div class="day-header">M</div><div class="day-header">T</div><div class="day-header">W</div><div class="day-header">T</div><div class="day-header">F</div><div class="day-header">S</div>
+          <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div><div class="day empty"></div><div class="day past">1</div><div class="day past">2</div><div class="day past">3</div>
+          <div class="day past">4</div><div class="day today">5</div><div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div>
+          <div class="day">11</div><div class="day">12</div><div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div>
+          <div class="day">18</div><div class="day">19</div><div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div>
+          <div class="day">25</div><div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="week-strip">
+        <button>←</button>
+        <div class="week-days">
+          <div class="week-day"><div class="day-label">Sun</div><div class="day-num">3</div></div>
+          <div class="week-day"><div class="day-label">Mon</div><div class="day-num">4</div></div>
+          <div class="week-day active"><div class="day-label">Tue</div><div class="day-num">5</div></div>
+          <div class="week-day"><div class="day-label">Wed</div><div class="day-num">6</div></div>
+          <div class="week-day"><div class="day-label">Thu</div><div class="day-num">7</div></div>
+          <div class="week-day"><div class="day-label">Fri</div><div class="day-num">8</div></div>
+          <div class="week-day"><div class="day-label">Sat</div><div class="day-num">9</div></div>
+        </div>
+        <button>→</button>
+      </div>
+
+      <div class="schedule">
+        <div class="schedule-header">
+          <div class="schedule-date">Tuesday, May 5</div>
+          <div class="schedule-actions">
+            <button class="btn-export" id="export-btn">⬇ Export CSV</button>
+            <button class="btn-mark-all" id="mark-all-btn">Mark All Showed</button>
+            <span class="patient-count">6 patients</span>
+          </div>
+        </div>
+        <table class="schedule-table">
+          <thead><tr><th style="width:120px">Time</th><th>Patient</th><th style="width:240px">Status</th></tr></thead>
+          <tbody id="patient-list"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data for multiple days in May 2026
+    const scheduleData = {
+      '2026-05-01': [
+        { time: '9:00 AM', name: 'Lisa Park', initials: 'LP', status: 'showed' },
+        { time: '10:30 AM', name: 'James Wilson', initials: 'JW', status: 'showed' },
+        { time: '11:00 AM', name: 'Sarah Lee', initials: 'SL', status: 'noshow' },
+        { time: '2:00 PM', name: 'Robert Brown', initials: 'RB', status: 'showed' },
+      ],
+      '2026-05-02': [
+        { time: '8:00 AM', name: 'Emily Davis', initials: 'ED', status: 'showed' },
+        { time: '9:30 AM', name: 'Tom Harris', initials: 'TH', status: 'noshow' },
+        { time: '11:00 AM', name: 'Maria Garcia', initials: 'MG', status: 'showed' },
+      ],
+      '2026-05-05': [
+        { time: '8:30 AM', name: 'Amy Chen', initials: 'AC', status: 'showed' },
+        { time: '9:00 AM', name: 'Michael Torres', initials: 'MT', status: 'showed' },
+        { time: '10:00 AM', name: 'Karen White', initials: 'KW', status: 'showed' },
+        { time: '11:00 AM', name: 'Daniel Kim', initials: 'DK', status: 'showed' },
+        { time: '1:30 PM', name: 'Nancy Adams', initials: 'NA', status: 'noshow' },
+        { time: '2:30 PM', name: 'Chris Evans', initials: 'CE', status: null },
+      ],
+      '2026-05-06': [
+        { time: '8:00 AM', name: 'Patricia Moore', initials: 'PM', status: null },
+        { time: '9:30 AM', name: 'Kevin Johnson', initials: 'KJ', status: null },
+        { time: '10:00 AM', name: 'Angela Martinez', initials: 'AM', status: null },
+        { time: '11:30 AM', name: 'David Lee', initials: 'DL', status: null },
+        { time: '1:00 PM', name: 'Susan Clark', initials: 'SC', status: null },
+      ],
+      '2026-05-07': [
+        { time: '8:30 AM', name: 'Brian Taylor', initials: 'BT', status: null },
+        { time: '10:00 AM', name: 'Jennifer White', initials: 'JW', status: null },
+        { time: '11:00 AM', name: 'Mark Anderson', initials: 'MA', status: null },
+        { time: '2:00 PM', name: 'Laura Thomas', initials: 'LT', status: null },
+      ],
+      '2026-05-08': [
+        { time: '9:00 AM', name: 'Steven Hall', initials: 'SH', status: null },
+        { time: '10:30 AM', name: 'Rachel Green', initials: 'RG', status: null },
+        { time: '1:00 PM', name: 'Amy Chen', initials: 'AC', status: null },
+      ],
+      '2026-05-09': [
+        { time: '8:00 AM', name: 'Daniel Kim', initials: 'DK', status: null },
+        { time: '9:00 AM', name: 'Chris Evans', initials: 'CE', status: null },
+      ],
+      '2026-05-12': [
+        { time: '8:30 AM', name: 'Amy Chen', initials: 'AC', status: null },
+        { time: '9:30 AM', name: 'Michael Torres', initials: 'MT', status: null },
+        { time: '11:00 AM', name: 'Karen White', initials: 'KW', status: null },
+        { time: '1:00 PM', name: 'Nancy Adams', initials: 'NA', status: null },
+      ],
+    };
+
+    let selectedDate = '2026-05-05';
+
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    function getPatients() {
+      return scheduleData[selectedDate] || [];
+    }
+
+    function formatDateHeading(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00');
+      return `${dayNames[d.getDay()]}, ${monthNames[d.getMonth()]} ${d.getDate()}`;
+    }
+
+    function render() {
+      const patients = getPatients();
+      const tbody = document.getElementById('patient-list');
+
+      if (patients.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="empty-icon">📋</div><p>No appointments scheduled for this day.</p></div></td></tr>`;
+      } else {
+        tbody.innerHTML = patients.map((p, i) => `
+          <tr>
+            <td>${p.time}</td>
+            <td><div class="patient-cell"><div class="avatar">${p.initials}</div><div class="patient-name">${p.name}</div></div></td>
+            <td>
+              <div class="status-btns">
+                <button class="status-btn showed ${p.status === 'showed' ? 'active' : ''}" onclick="setStatus(${i},'showed')">Showed</button>
+                <button class="status-btn noshow ${p.status === 'noshow' ? 'active' : ''}" onclick="setStatus(${i},'noshow')">No-show</button>
+              </div>
+              ${p.status === 'noshow' ? '<input class="reason-input" placeholder="Reason (optional)" />' : ''}
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      document.querySelector('.schedule-date').textContent = formatDateHeading(selectedDate);
+      document.querySelector('.patient-count').textContent = `${patients.length} patients`;
+      updateSummary();
+      updateWeekStrip();
+      updateCalendar();
+    }
+
+    function setStatus(index, status) {
+      const patients = getPatients();
+      patients[index].status = patients[index].status === status ? null : status;
+      render();
+    }
+
+    function updateSummary() {
+      const patients = getPatients();
+      const showed = patients.filter(p => p.status === 'showed').length;
+      const noshow = patients.filter(p => p.status === 'noshow').length;
+      const pending = patients.filter(p => !p.status).length;
+      const total = patients.length;
+
+      document.getElementById('showed-count').textContent = showed;
+      document.getElementById('noshow-count').textContent = noshow;
+      document.getElementById('pending-count').textContent = pending;
+
+      // Update weekly stats
+      let weekShowed = 0, weekTotal = 0;
+      const weekStart = getWeekStart(new Date(selectedDate + 'T12:00:00'));
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + i);
+        const key = toKey(d);
+        if (scheduleData[key]) {
+          scheduleData[key].forEach(p => {
+            weekTotal++;
+            if (p.status === 'showed') weekShowed++;
+          });
+        }
+      }
+      const weekNoshow = Object.values(scheduleData).flat().filter(p => p.status === 'noshow').length;
+      const pct = weekTotal ? Math.round((weekShowed / weekTotal) * 100) : 0;
+      const noshowPct = weekTotal ? Math.round((weekNoshow / weekTotal) * 100) : 0;
+      document.querySelector('.progress-green').style.width = pct + '%';
+      document.querySelector('.progress-red').style.width = noshowPct + '%';
+      document.querySelector('.attendance-text').innerHTML = `<strong>${pct}%</strong> attendance rate (${weekShowed}/${weekTotal} patients)`;
+    }
+
+    function getWeekStart(date) {
+      const d = new Date(date);
+      d.setDate(d.getDate() - d.getDay());
+      return d;
+    }
+
+    function toKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    }
+
+    function selectDate(dateStr) {
+      selectedDate = dateStr;
+      render();
+    }
+
+    function updateWeekStrip() {
+      const current = new Date(selectedDate + 'T12:00:00');
+      const weekStart = getWeekStart(current);
+      const container = document.querySelector('.week-days');
+      const shortDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      container.innerHTML = '';
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + i);
+        const key = toKey(d);
+        const isActive = key === selectedDate;
+        const div = document.createElement('div');
+        div.className = 'week-day' + (isActive ? ' active' : '');
+        div.innerHTML = `<div class="day-label">${shortDays[d.getDay()]}</div><div class="day-num">${d.getDate()}</div>`;
+        div.onclick = () => selectDate(key);
+        container.appendChild(div);
+      }
+    }
+
+    function updateCalendar() {
+      const sel = new Date(selectedDate + 'T12:00:00');
+      const year = sel.getFullYear(), month = sel.getMonth();
+      const todayKey = toKey(new Date());
+      document.querySelector('.calendar-month').textContent = `${monthNames[month]} ${year}`;
+      const grid = document.querySelector('.calendar-grid');
+      grid.innerHTML = '<div class="day-header">S</div><div class="day-header">M</div><div class="day-header">T</div><div class="day-header">W</div><div class="day-header">T</div><div class="day-header">F</div><div class="day-header">S</div>';
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      for (let i = 0; i < firstDay; i++) grid.innerHTML += '<div class="day empty"></div>';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const isSelected = key === selectedDate;
+        const isToday = key === todayKey;
+        const hasData = scheduleData[key];
+        let cls = 'day';
+        if (isSelected) cls = 'day selected';
+        else if (isToday) cls = 'day today';
+        else if (hasData) cls = 'day has-data';
+        grid.innerHTML += `<div class="${cls}" onclick="selectDate('${key}')">${d}</div>`;
+      }
+    }
+
+    // Week strip navigation
+    document.querySelector('.week-strip').addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        const dir = e.target.textContent === '←' ? -7 : 7;
+        const d = new Date(selectedDate + 'T12:00:00');
+        d.setDate(d.getDate() + dir);
+        selectDate(toKey(d));
+      }
+    });
+
+    // Calendar month navigation
+    document.querySelector('.calendar-nav').addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        const d = new Date(selectedDate + 'T12:00:00');
+        d.setMonth(d.getMonth() + (e.target.textContent === '←' ? -1 : 1));
+        selectDate(toKey(d));
+      }
+    });
+
+    document.getElementById('mark-all-btn').addEventListener('click', () => {
+      getPatients().forEach(p => { if (!p.status) p.status = 'showed'; });
+      render();
+    });
+
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const patients = getPatients();
+      if (!patients.length) return;
+      const header = 'Date,Time,Patient,Status\n';
+      const rows = patients.map(p =>
+        `${selectedDate},${p.time},"${p.name}",${p.status || 'pending'}`
+      ).join('\n');
+      const blob = new Blob([header + rows], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `attendance_${selectedDate}.csv`;
+      a.click();
+    });
+
+    render();
+
+    // Live reload
+    (function() {
+      let lastModified = null;
+      setInterval(async () => {
+        try {
+          const res = await fetch(window.location.href, { method: 'HEAD' });
+          const mod = res.headers.get('last-modified');
+          if (lastModified && mod !== lastModified) window.location.reload();
+          lastModified = mod;
+        } catch(e) {}
+      }, 500);
+    })();
+  </script>
+</body>
+</html>
