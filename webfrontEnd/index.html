@@ -5,65 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Practice Time Window Configuration — Bamboo Health</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; color: #1b2a4a; background: #f7f9fc; }
-
-    /* Header */
-    .header { background: #0d2137; padding: 1.25rem 2rem; display: flex; align-items: center; }
-    .header .logo { color: #fff; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; }
-    .header .logo span { color: #3bbfa0; }
-
-    /* Hero */
-    .hero { background: linear-gradient(135deg, #0d2137 0%, #163a5c 100%); padding: 3rem 2rem; text-align: center; color: #fff; }
-    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .hero p { color: #a8c4d4; font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
-
-    /* Main content */
+    body { font-family: 'Libre Franklin', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; color: #201C4F; background: #f2f2f2; }
+    .header { background: #201C4F; padding: 1.25rem 2rem; display: flex; align-items: center; }
+    .header .logo { color: #fff; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; font-family: 'Libre Franklin', sans-serif; }
+    .header .logo span { color: #34e2e4; }
+    .hero { background: linear-gradient(135deg, #201C4F 0%, #330968 100%); padding: 3.5rem 2rem; text-align: center; color: #fff; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; font-weight: 400; margin-bottom: 0.5rem; }
+    .hero p { color: #c8c4e0; font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
     .container { max-width: 1100px; margin: -2rem auto 3rem; padding: 0 1.5rem; position: relative; z-index: 1; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 2.5rem; margin-bottom: 1.5rem; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(32,28,79,0.08); padding: 2.5rem; margin-bottom: 1.5rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border: none; border-radius: 50px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-primary { background: #4721fb; color: #fff; }
+    .btn-primary:hover { background: #330968; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(71,33,251,0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-danger { background: #cf2e2e; color: #fff; }
+    .btn-danger:hover { background: #a82222; }
+    .btn-secondary { background: #e8e6f0; color: #201C4F; }
+    .btn-secondary:hover { background: #d4d0e6; }
 
-    /* Actions card */
-    .actions { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
-    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.75rem; border: none; border-radius: 50px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: inherit; }
-    .btn-download { background: #3bbfa0; color: #fff; }
-    .btn-download:hover { background: #2fa88b; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,191,160,0.3); }
-    .btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    /* Form styles */
+    .practice-entry { border: 1px solid #e8e6f0; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; position: relative; background: #fafaff; }
+    .practice-entry.has-error { border-color: #cf2e2e; }
+    .practice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .practice-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #201C4F; font-weight: 400; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #5a5780; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select { padding: 0.6rem 0.75rem; border: 1.5px solid #d4d0e6; border-radius: 8px; font-size: 0.92rem; font-family: inherit; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #4721fb; box-shadow: 0 0 0 3px rgba(71,33,251,0.1); }
+    .form-group input.invalid, .form-group select.invalid { border-color: #cf2e2e; background: #fef2f2; }
+    .form-group .field-error { font-size: 0.78rem; color: #cf2e2e; margin-top: 0.2rem; min-height: 1rem; }
 
-    /* Upload area */
-    .upload-area { border: 2px dashed #c8d6e5; border-radius: 12px; padding: 2.5rem; text-align: center; transition: all 0.2s; cursor: pointer; background: #f9fbfd; }
-    .upload-area:hover { border-color: #3bbfa0; background: #f0fdf9; }
-    .upload-area.dragover { border-color: #3bbfa0; background: #e6faf4; }
-    .upload-area p { margin: 0.4rem 0; color: #5a6f8a; }
-    .upload-area .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-    .upload-area .upload-title { font-weight: 600; color: #1b2a4a; font-size: 1.05rem; }
-    .upload-area input { display: none; }
+    /* Windows grid */
+    .windows-section { margin-top: 0.5rem; }
+    .windows-section h4 { font-size: 0.88rem; font-weight: 600; color: #5a5780; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .day-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .day-label { width: 90px; font-size: 0.88rem; font-weight: 600; color: #201C4F; }
+    .window-inputs { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+    .window-inputs input { width: 70px; padding: 0.45rem 0.5rem; border: 1.5px solid #d4d0e6; border-radius: 6px; font-size: 0.88rem; font-family: inherit; text-align: center; }
+    .window-inputs input.invalid { border-color: #cf2e2e; background: #fef2f2; }
+    .window-inputs .sep { color: #8F8DA7; font-weight: 600; }
+    .add-window-btn { background: none; border: 1px dashed #4721fb; color: #4721fb; border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.78rem; cursor: pointer; font-weight: 600; }
+    .add-window-btn:hover { background: #f0edff; }
+    .remove-window-btn { background: none; border: none; color: #cf2e2e; cursor: pointer; font-size: 1rem; padding: 0.2rem 0.4rem; }
 
-    /* Status messages */
+    /* IVR section */
+    .ivr-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e8e6f0; }
+    .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
+    .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4721fb; }
+    .checkbox-row label { font-size: 0.92rem; font-weight: 500; color: #201C4F; cursor: pointer; }
+    .ivr-desc { margin-top: 0.5rem; }
+    .ivr-desc input { width: 100%; }
+
+    /* Status */
     .status { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 8px; display: none; font-weight: 500; }
-    .status.success { display: block; background: #e6faf4; border: 1px solid #3bbfa0; color: #1a6b55; }
-    .status.error { display: block; background: #fef2f2; border: 1px solid #f87171; color: #991b1b; }
-    .error-banner { background: #fef2f2; border: 1px solid #f87171; color: #991b1b; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500; }
+    .status.success { display: block; background: #e8f8f0; border: 1px solid #67a671; color: #2d5e35; }
+    .status.error { display: block; background: #fef2f2; border: 1px solid #cf2e2e; color: #991b1b; }
 
     /* Instructions */
-    h2 { font-size: 1.4rem; font-weight: 700; color: #0d2137; margin-top: 2rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e8eef4; }
+    h2 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; font-weight: 400; color: #201C4F; margin-top: 2rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e8e6f0; }
     h2:first-child { margin-top: 0; }
-    h3 { font-size: 1.05rem; font-weight: 600; color: #163a5c; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-    p, li { margin-bottom: 0.5rem; color: #3d5068; }
+    h3 { font-size: 1.05rem; font-weight: 600; color: #330968; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    p, li { margin-bottom: 0.5rem; color: #3d3868; }
     ul, ol { padding-left: 1.5rem; }
-    code { background: #eef3f8; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.88em; color: #163a5c; }
+    code { background: #f0edff; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.88em; color: #330968; }
     table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.88rem; }
-    th, td { border: 1px solid #e8eef4; padding: 0.6rem 0.75rem; text-align: left; }
-    th { background: #f1f5f9; color: #0d2137; font-weight: 600; }
-    .checklist-box { background: #f0fdf9; border: 1px solid #3bbfa0; border-radius: 8px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
-    .checklist-box h3 { margin-top: 0; color: #1a6b55; }
+    th, td { border: 1px solid #e8e6f0; padding: 0.6rem 0.75rem; text-align: left; }
+    th { background: #f5f4fa; color: #201C4F; font-weight: 600; }
+    .checklist-box { background: #f0edff; border: 1px solid #4721fb; border-radius: 8px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+    .checklist-box h3 { margin-top: 0; color: #330968; }
     .checklist { list-style: none; padding-left: 0; }
     .checklist li { padding: 0.3rem 0; padding-left: 1.5rem; position: relative; }
-    .checklist li::before { content: "☐"; position: absolute; left: 0; color: #3bbfa0; font-weight: 600; }
-
-    /* Footer */
-    .footer { text-align: center; padding: 2rem; color: #8a9bb5; font-size: 0.85rem; }
+    .checklist li::before { content: "☐"; position: absolute; left: 0; color: #4721fb; font-weight: 600; }
+    .footer { text-align: center; padding: 2rem; color: #8F8DA7; font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -73,70 +90,55 @@
 
   <div class="hero">
     <h1>Practice Time Window Configuration</h1>
-    <p>Download the template, fill in your practice details, and upload the completed file below.</p>
+    <p>Enter your practice details below to configure appointment confirmation call scheduling.</p>
   </div>
 
   <div class="container">
-    <div id="error-banner" class="error-banner" style="display:none;"></div>
-
     <div class="card">
-      <h2 style="margin-top:0;">Welcome</h2>
+      <h2 style="margin-top:0;">Welcome!</h2>
       <p>We need a few details about your practice locations to configure call scheduling on your behalf. This page will guide you through the process:</p>
       <ol>
-        <li><strong>Download</strong> the pre-formatted Excel template using the button below</li>
-        <li><strong>Fill in</strong> your practice phone numbers, timezones, and preferred call windows (detailed instructions further down)</li>
-        <li><strong>Save</strong> the file as: <code>YourOrganizationName_YYYY-MM-DD.xlsx</code> (e.g. <code>AcmeHealth_2026-05-01.xlsx</code>)</li>
-        <li><strong>Upload</strong> the completed file using the upload area below</li>
+        <li><strong>Fill in</strong> your practice phone numbers, timezones, and preferred call windows using the form below</li>
+        <li><strong>Add more practices</strong> if you have multiple locations using the "+ Add Practice" button</li>
+        <li><strong>Review</strong> your entries — the form will highlight any errors in real time</li>
+        <li><strong>Submit</strong> when you're done — your data will be securely uploaded</li>
       </ol>
       <p>The entire process typically takes <strong>5–10 minutes</strong>. If you have any questions, reach out to your account representative.</p>
     </div>
 
     <div class="card">
-      <div class="actions">
-        <button class="btn btn-download" id="download-btn">⬇ Download Template</button>
-      </div>
-      <div class="upload-area" id="upload-area" style="margin-top:1.5rem;">
-        <div class="upload-icon">📄</div>
-        <p class="upload-title">Upload Completed File</p>
-        <p>Drag &amp; drop your .xlsx file here, or click to browse</p>
-        <input type="file" id="file-input" accept=".xlsx">
-        <p id="file-name" style="color:#3bbfa0;font-weight:600;"></p>
-      </div>
-      <div id="status" class="status"></div>
-    </div>
-
-    <div class="card">
       <h2 style="margin-top:0;">Instructions</h2>
 
-      <h3>Column Guide</h3>
+      <h3>Field Guide</h3>
       <table>
-        <thead><tr><th>Column</th><th>What to Enter</th><th>Example</th></tr></thead>
+        <thead><tr><th>Field</th><th>What to Enter</th><th>Example</th></tr></thead>
         <tbody>
-          <tr><td><strong>phone</strong></td><td>Practice phone number with country code, starting with <code>+</code></td><td><code>+12143309221</code></td></tr>
-          <tr><td><strong>tz</strong></td><td>Timezone — select from the dropdown</td><td><code>America/Chicago</code></td></tr>
-          <tr><td><strong>max_days</strong></td><td>Maximum number of days to attempt contact</td><td><code>2</code></td></tr>
-          <tr><td><strong>attempts_per_day</strong></td><td>Number of call attempts per day</td><td><code>1</code></td></tr>
-          <tr><td><strong>Monday – Sunday</strong></td><td>Call windows for each day</td><td><code>08:00-12:00, 13:00-17:00</code></td></tr>
-          <tr><td><strong>alternate_ivr_behavior</strong></td><td><code>TRUE</code> or <code>FALSE</code></td><td><code>TRUE</code></td></tr>
-          <tr><td><strong>alternate_ivr_description</strong></td><td>Describe behavior if TRUE; blank otherwise</td><td><code>Wait for a live agent.</code></td></tr>
+          <tr><td><strong>Practice Name</strong></td><td>Name of the practice location</td><td><code>Acme Health - Main St</code></td></tr>
+          <tr><td><strong>Phone</strong></td><td>Practice phone number with country code, starting with <code>+</code></td><td><code>+12143309221</code></td></tr>
+          <tr><td><strong>Timezone</strong></td><td>Timezone — select from the dropdown</td><td><code>America/Chicago</code></td></tr>
+          <tr><td><strong>Max Days</strong></td><td>Maximum number of days to attempt contact (1–7)</td><td><code>2</code></td></tr>
+          <tr><td><strong>Attempts/Day</strong></td><td>Number of call attempts per day (1–5)</td><td><code>1</code></td></tr>
+          <tr><td><strong>Call Windows</strong></td><td>Preferred call windows for each day — <strong>military time only</strong> (HH:MM)</td><td><code>08:00-17:00</code></td></tr>
+          <tr><td><strong>Alternate IVR</strong></td><td>Check if you need non-standard IVR handling</td><td><code>TRUE</code></td></tr>
+          <tr><td><strong>IVR Description</strong></td><td>Describe behavior if checked; leave blank otherwise</td><td><code>Press 2 for scheduling, then hold for staff.</code></td></tr>
         </tbody>
       </table>
 
-      <h3>Entering Time Windows</h3>
-      <p>Use <strong>24-hour format</strong>: <code>HH:MM-HH:MM</code></p>
+      <h3>Entering Time Windows (Military Time Only)</h3>
+      <p>All call windows <strong>must</strong> use <strong>military time (24-hour format)</strong>: <code>HH:MM</code></p>
       <table>
         <thead><tr><th>What you want</th><th>What to enter</th></tr></thead>
         <tbody>
-          <tr><td>One window, morning only</td><td><code>08:00-12:00</code></td></tr>
-          <tr><td>Two windows</td><td><code>08:00-12:00, 13:00-17:00</code></td></tr>
-          <tr><td>No calls on this day</td><td><em>(leave blank)</em></td></tr>
+          <tr><td>One window, morning only</td><td><code>08:00</code> – <code>12:00</code></td></tr>
+          <tr><td>Two windows (use "+ Add" button)</td><td><code>08:00</code>–<code>12:00</code> and <code>13:00</code>–<code>17:00</code></td></tr>
+          <tr><td>No calls on this day</td><td><em>Leave both fields blank</em></td></tr>
         </tbody>
       </table>
       <p><strong>Rules:</strong></p>
       <ul>
         <li>Hours: <code>00</code>–<code>23</code>, minutes: <code>00</code>–<code>59</code></li>
         <li>Always use two digits (e.g. <code>08:00</code>, not <code>8:00</code>)</li>
-        <li>Separate multiple windows with a comma</li>
+        <li>Use the "+ Add" button next to a day to add multiple call windows</li>
       </ul>
 
       <h3>Available Timezones</h3>
@@ -151,14 +153,27 @@
       <div class="checklist-box">
       <h3>✓ Before You Submit</h3>
       <ul class="checklist">
-        <li>Every row has a phone number starting with <code>+</code></li>
-        <li>A timezone is selected for each row</li>
-        <li>Time windows use 24-hour format (<code>HH:MM-HH:MM</code>)</li>
+        <li>Every practice has a phone number starting with <code>+</code></li>
+        <li>A timezone is selected for each practice</li>
+        <li>Time windows use military time format (<code>HH:MM</code>, e.g. <code>08:00</code> not <code>8:00 AM</code>)</li>
         <li>Days with no call windows are left blank</li>
-        <li><code>alternate_ivr_behavior</code> is <code>TRUE</code> or <code>FALSE</code> for each row</li>
+        <li>If Alternate IVR is checked, a description is provided</li>
       </ul>
       </div>
+    </div>
 
+    <div class="card">
+      <h2 style="margin-top:0;">Configure Your Practices</h2>
+      <p>Add each practice location below with their phone number, timezone, and preferred call windows. Click <strong>"+ Add Practice"</strong> to add more.</p>
+
+      <div id="practices-container"></div>
+
+      <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;">
+        <button class="btn btn-secondary" id="add-practice-btn">+ Add Practice</button>
+        <button class="btn btn-primary" id="submit-btn">Submit All Practices</button>
+      </div>
+
+      <div id="status" class="status"></div>
     </div>
   </div>
 
@@ -171,92 +186,272 @@
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
 
-    function disablePage(msg) {
-      document.getElementById('error-banner').style.display = 'block';
-      document.getElementById('error-banner').textContent = msg;
-      document.getElementById('download-btn').disabled = true;
-      document.getElementById('upload-area').style.pointerEvents = 'none';
-      document.getElementById('upload-area').style.opacity = '0.5';
+    const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    const TIMEZONES = [
+      {value:'America/New_York', label:'Eastern (America/New_York)'},
+      {value:'America/Chicago', label:'Central (America/Chicago)'},
+      {value:'America/Denver', label:'Mountain (America/Denver)'},
+      {value:'America/Los_Angeles', label:'Pacific (America/Los_Angeles)'},
+      {value:'America/Phoenix', label:'Arizona (America/Phoenix)'},
+    ];
+    const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+    const PHONE_RE = /^\+\d{10,15}$/;
+
+    let practiceCount = 0;
+
+    function createPracticeEntry() {
+      practiceCount++;
+      const id = practiceCount;
+      const div = document.createElement('div');
+      div.className = 'practice-entry';
+      div.id = `practice-${id}`;
+      div.innerHTML = `
+        <div class="practice-header">
+          <h3>Practice #${id}</h3>
+          <button class="btn btn-danger" onclick="removePractice(${id})" style="padding:0.4rem 0.8rem;font-size:0.82rem;" aria-label="Remove practice ${id}">✕ Remove</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name-${id}">Practice Name</label>
+            <input type="text" id="name-${id}" placeholder="e.g. Acme Health - Main St" data-validate="name">
+            <div class="field-error" id="name-${id}-err"></div>
+          </div>
+          <div class="form-group">
+            <label for="phone-${id}">Phone Number</label>
+            <input type="text" id="phone-${id}" placeholder="+12143309221" data-validate="phone">
+            <div class="field-error" id="phone-${id}-err"></div>
+          </div>
+          <div class="form-group">
+            <label for="tz-${id}">Timezone</label>
+            <select id="tz-${id}" data-validate="tz">
+              <option value="">Select timezone…</option>
+              ${TIMEZONES.map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
+            </select>
+            <div class="field-error" id="tz-${id}-err"></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="max_days-${id}">Max Days</label>
+            <input type="number" id="max_days-${id}" min="1" max="7" value="2" data-validate="max_days">
+            <div class="field-error" id="max_days-${id}-err"></div>
+          </div>
+          <div class="form-group">
+            <label for="attempts-${id}">Attempts/Day</label>
+            <input type="number" id="attempts-${id}" min="1" max="5" value="1" data-validate="attempts">
+            <div class="field-error" id="attempts-${id}-err"></div>
+          </div>
+        </div>
+        <div class="windows-section">
+          <h4>Call Windows (Military Time — HH:MM)</h4>
+          ${DAYS.map((day, i) => `
+            <div class="day-row" data-day="${i}">
+              <span class="day-label">${day}</span>
+              <div class="window-inputs" id="windows-${id}-${i}">
+                <input type="text" placeholder="HH:MM" data-role="start" maxlength="5" aria-label="${day} start time">
+                <span class="sep">–</span>
+                <input type="text" placeholder="HH:MM" data-role="end" maxlength="5" aria-label="${day} end time">
+                <button class="remove-window-btn" onclick="removeWindow(this)" title="Remove window" aria-label="Remove window">✕</button>
+              </div>
+              <button class="add-window-btn" onclick="addWindow(${id}, ${i})" aria-label="Add window for ${day}">+ Add</button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="ivr-section">
+          <div class="checkbox-row">
+            <input type="checkbox" id="ivr-${id}" onchange="toggleIvrDesc(${id})">
+            <label for="ivr-${id}">Alternate IVR Behavior</label>
+          </div>
+          <div class="ivr-desc" id="ivr-desc-${id}" style="display:none;">
+            <div class="form-group">
+              <label for="ivr-text-${id}">Describe IVR behavior</label>
+              <input type="text" id="ivr-text-${id}" placeholder="e.g. Press 2 for scheduling, then hold for staff.">
+              <div class="field-error" id="ivr-text-${id}-err"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('practices-container').appendChild(div);
+      attachLiveValidation(id);
     }
 
-    // TODO: Re-enable token validation after deploy
-    // if (!token) {
-    //   disablePage('Invalid link — no customer token found. Please use the URL provided in your email.');
-    // } else {
-    //   (async () => {
-    //     try {
-    //       const res = await fetch(`${API_BASE}/validate?token=${encodeURIComponent(token)}`);
-    //       if (!res.ok) disablePage('This link is invalid or has expired. Please contact your account representative.');
-    //     } catch (e) {
-    //       disablePage('Unable to verify your link. Please try again later.');
-    //     }
-    //   })();
-    // }
+    function removePractice(id) {
+      const el = document.getElementById(`practice-${id}`);
+      if (el) el.remove();
+      renumberPractices();
+    }
 
-    document.getElementById('download-btn').addEventListener('click', async () => {
-      if (!token) return;
-      try {
-        const res = await fetch(`${API_BASE}/template?token=${encodeURIComponent(token)}`);
-        if (!res.ok) throw new Error('Failed to get download link');
-        const { downloadUrl } = await res.json();
-        window.location.href = downloadUrl;
-      } catch (err) {
-        showStatus('Download failed. Please try again or contact your account representative.', 'error');
+    function renumberPractices() {
+      document.querySelectorAll('.practice-entry').forEach((el, i) => {
+        el.querySelector('.practice-header h3').textContent = `Practice #${i + 1}`;
+      });
+    }
+
+    function addWindow(practiceId, dayIndex) {
+      const container = document.getElementById(`windows-${practiceId}-${dayIndex}`);
+      const group = document.createElement('span');
+      group.className = 'window-inputs';
+      group.style.marginLeft = '0';
+      group.innerHTML = `
+        <input type="text" placeholder="HH:MM" data-role="start" maxlength="5" aria-label="Start time">
+        <span class="sep">–</span>
+        <input type="text" placeholder="HH:MM" data-role="end" maxlength="5" aria-label="End time">
+        <button class="remove-window-btn" onclick="removeWindow(this)" title="Remove window" aria-label="Remove window">✕</button>
+      `;
+      container.parentElement.insertBefore(group, container.parentElement.querySelector('.add-window-btn'));
+    }
+
+    function removeWindow(btn) {
+      const group = btn.closest('.window-inputs');
+      const dayRow = group.closest('.day-row');
+      const allGroups = dayRow.querySelectorAll('.window-inputs');
+      if (allGroups.length > 1) {
+        group.remove();
+      } else {
+        group.querySelectorAll('input').forEach(inp => inp.value = '');
       }
-    });
-
-    const uploadArea = document.getElementById('upload-area');
-    const fileInput = document.getElementById('file-input');
-    const statusEl = document.getElementById('status');
-
-    uploadArea.addEventListener('click', () => fileInput.click());
-    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('dragover');
-      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-    });
-    fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
-
-    function handleFile(file) {
-      if (!file.name.endsWith('.xlsx')) { showStatus('Please upload an .xlsx file.', 'error'); return; }
-      document.getElementById('file-name').textContent = file.name;
-      uploadFile(file);
     }
 
-    async function uploadFile(file) {
+    function toggleIvrDesc(id) {
+      const checked = document.getElementById(`ivr-${id}`).checked;
+      document.getElementById(`ivr-desc-${id}`).style.display = checked ? 'block' : 'none';
+    }
+
+    function attachLiveValidation(id) {
+      const entry = document.getElementById(`practice-${id}`);
+      entry.addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') validateField(e.target, id);
+      });
+      entry.addEventListener('change', (e) => {
+        if (e.target.tagName === 'SELECT') validateField(e.target, id);
+      });
+    }
+
+    function validateField(el, id) {
+      const type = el.dataset.validate;
+      let err = '';
+      if (type === 'name') {
+        if (!el.value.trim()) err = 'Required';
+      } else if (type === 'phone') {
+        if (el.value && !PHONE_RE.test(el.value)) err = 'Must start with + followed by 10–15 digits';
+      } else if (type === 'tz') {
+        if (!el.value) err = 'Required';
+      } else if (type === 'max_days') {
+        const v = parseInt(el.value);
+        if (!v || v < 1 || v > 7) err = '1–7';
+      } else if (type === 'attempts') {
+        const v = parseInt(el.value);
+        if (!v || v < 1 || v > 5) err = '1–5';
+      } else if (el.dataset.role === 'start' || el.dataset.role === 'end') {
+        if (el.value && !TIME_RE.test(el.value)) { el.classList.add('invalid'); return; }
+        else { el.classList.remove('invalid'); return; }
+      }
+      const errEl = document.getElementById(`${el.id}-err`);
+      if (errEl) { errEl.textContent = err; }
+      el.classList.toggle('invalid', !!err);
+    }
+
+    function collectData() {
+      const entries = document.querySelectorAll('.practice-entry');
+      const results = [];
+      let valid = true;
+
+      entries.forEach(entry => {
+        const id = entry.id.split('-')[1];
+        const name = entry.querySelector(`#name-${id}`).value.trim();
+        const phone = entry.querySelector(`#phone-${id}`).value.trim();
+        const tz = entry.querySelector(`#tz-${id}`).value;
+        const maxDays = parseInt(entry.querySelector(`#max_days-${id}`).value);
+        const attempts = parseInt(entry.querySelector(`#attempts-${id}`).value);
+        const ivr = entry.querySelector(`#ivr-${id}`).checked;
+        const ivrDesc = entry.querySelector(`#ivr-text-${id}`)?.value.trim() || '';
+
+        // Validate required fields
+        if (!name) { valid = false; entry.querySelector(`#name-${id}`).classList.add('invalid'); }
+        if (!phone || !PHONE_RE.test(phone)) { valid = false; entry.querySelector(`#phone-${id}`).classList.add('invalid'); }
+        if (!tz) { valid = false; entry.querySelector(`#tz-${id}`).classList.add('invalid'); }
+        if (!maxDays || maxDays < 1 || maxDays > 7) { valid = false; entry.querySelector(`#max_days-${id}`).classList.add('invalid'); }
+        if (!attempts || attempts < 1 || attempts > 5) { valid = false; entry.querySelector(`#attempts-${id}`).classList.add('invalid'); }
+        if (ivr && !ivrDesc) { valid = false; const el = entry.querySelector(`#ivr-text-${id}`); if(el) el.classList.add('invalid'); }
+
+        // Collect windows
+        const windows = [];
+        entry.querySelectorAll('.day-row').forEach(row => {
+          const dow = parseInt(row.dataset.day);
+          row.querySelectorAll('.window-inputs').forEach(group => {
+            const startInput = group.querySelector('[data-role="start"]');
+            const endInput = group.querySelector('[data-role="end"]');
+            const start = startInput?.value.trim();
+            const end = endInput?.value.trim();
+            if (start && end) {
+              if (!TIME_RE.test(start)) { valid = false; startInput.classList.add('invalid'); }
+              if (!TIME_RE.test(end)) { valid = false; endInput.classList.add('invalid'); }
+              if (TIME_RE.test(start) && TIME_RE.test(end)) {
+                windows.push({ dow, start, end });
+              }
+            } else if (start || end) {
+              valid = false;
+              if (start && !end) endInput.classList.add('invalid');
+              if (end && !start) startInput.classList.add('invalid');
+            }
+          });
+        });
+
+        const body = { practice_name: name, tz, max_days: maxDays, attempts_per_day: attempts, windows, alternate_ivr_behavior: ivr };
+        if (ivr && ivrDesc) body.alternate_ivr_description = ivrDesc;
+        results.push({ phone, body });
+      });
+
+      // Check duplicate phones
+      const phones = results.map(r => r.phone);
+      const dupes = phones.filter((p, i) => phones.indexOf(p) !== i);
+      if (dupes.length) { valid = false; }
+
+      return { results, valid, dupes };
+    }
+
+    async function submitAll() {
+      const statusEl = document.getElementById('status');
       statusEl.style.display = 'none';
+
+      const { results, valid, dupes } = collectData();
+
+      if (!results.length) { showStatus('Please add at least one practice.', 'error'); return; }
+      if (dupes.length) { showStatus(`Duplicate phone number(s): ${dupes.join(', ')}`, 'error'); return; }
+      if (!valid) { showStatus('Please fix the highlighted errors above.', 'error'); return; }
+
+      document.getElementById('submit-btn').disabled = true;
       try {
-        const res = await fetch(`${API_BASE}/upload-url?token=${encodeURIComponent(token)}&filename=${encodeURIComponent(file.name)}`);
-        if (!res.ok) throw new Error('Failed to get upload URL');
-        const { uploadUrl } = await res.json();
-        const up = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }, body: file });
-        if (!up.ok) throw new Error('Upload failed');
-        showStatus('✓ File uploaded successfully! Thank you.', 'success');
+        for (const { phone, body } of results) {
+          const filename = phone.replace('+', '') + '.json';
+          const jsonBlob = new Blob([JSON.stringify(body, null, 2)], { type: 'application/json' });
+
+          const res = await fetch(`${API_BASE}/upload-url?token=${encodeURIComponent(token || '')}&filename=${encodeURIComponent(filename)}`);
+          if (!res.ok) throw new Error(`Failed to get upload URL for ${filename}`);
+          const { uploadUrl } = await res.json();
+
+          const up = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: jsonBlob });
+          if (!up.ok) throw new Error(`Upload failed for ${filename}`);
+        }
+        showStatus(`✓ Successfully submitted ${results.length} practice(s). Thank you!`, 'success');
       } catch (err) {
-        showStatus(`Upload failed: ${err.message}. Please try again or contact your account representative.`, 'error');
+        showStatus(`Submission failed: ${err.message}. Please try again or contact your account representative.`, 'error');
+      } finally {
+        document.getElementById('submit-btn').disabled = false;
       }
     }
 
     function showStatus(msg, type) {
-      statusEl.textContent = msg;
-      statusEl.className = 'status ' + type;
-      statusEl.style.display = 'block';
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = 'status ' + type;
+      el.style.display = 'block';
     }
 
-    // Live reload - polls for file changes
-    (function() {
-      let lastModified = null;
-      setInterval(async () => {
-        try {
-          const res = await fetch(window.location.href, { method: 'HEAD' });
-          const mod = res.headers.get('last-modified');
-          if (lastModified && mod !== lastModified) window.location.reload();
-          lastModified = mod;
-        } catch(e) {}
-      }, 500);
-    })();
+    // Init
+    document.getElementById('add-practice-btn').addEventListener('click', createPracticeEntry);
+    document.getElementById('submit-btn').addEventListener('click', submitAll);
+    createPracticeEntry(); // Start with one entry
   </script>
 </body>
 </html>
